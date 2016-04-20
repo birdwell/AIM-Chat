@@ -165,3 +165,8 @@ img.xpButtons {
     top: -29px;
     right: 1px;
 }
+img.aimIcon {
+    position: absolute;
+    top: -25px;
+    left: 1px;
+}
