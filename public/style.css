@@ -41,9 +41,18 @@ ul {
 }
 
 .page {
-  height: 500px;
+  height: 90%;
   position: absolute;
-  width: 650px;
+  width: 45%;
+  max-height: 450px;
+}
+@media only screen
+  and (min-device-width: 320px)
+  and (max-device-width: 736px) {
+    .page {
+      height: 100%;
+      width: 100%;
+    }
 }
 
 /* Login Page */
@@ -100,7 +109,8 @@ ul {
 /* Font */
 
 .messages {
-  font-size: 150%;
+  font-size: 16px;
+  font-family: 'Sans-serif';
 }
 
 .inputMessage {
@@ -130,6 +140,11 @@ ul {
   overflow-y: scroll;
   padding: 10px 20px 10px 20px;
   background-color: white;
+  box-shadow: inset 1px 1px 0 #000000;
+  border-top: 1px solid  #B3AFA0;
+  border-left: 1px solid #B3AFA0;
+  border-right: 1px solid white;
+  border-bottom: 1px solid white;
 }
 
 .message.typing .messageBody {
@@ -147,7 +162,7 @@ ul {
 
 .inputMessage {
   border: 1px solid #000;
-  bottom: 10%;
+  bottom: 14%;
   height: 20%;
   left: 0;
   outline: none;
@@ -169,4 +184,18 @@ img.aimIcon {
     position: absolute;
     top: -25px;
     left: 1px;
+}
+button.sendButton {
+    background-image: url('./assets/sendbutton.png');
+    width: 34px;
+    background-repeat: no-repeat;
+    height: 38px;
+    border: none;
+    position: absolute;
+    bottom: 2%;
+    right: 9px;
+    cursor: pointer;
+}
+button.sendButton:hover {
+  background-image: url('./assets/hoverSendButton.png');
 }

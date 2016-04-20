@@ -12,6 +12,7 @@ $(function() {
   var $usernameInput = $('.usernameInput'); // Input for username
   var $messages = $('.messages'); // Messages area
   var $inputMessage = $('.inputMessage'); // Input message input box
+  var $sendButton = $('.sendButton');
 
   var $loginPage = $('.login.page'); // The login page
   var $chatPage = $('.chat.page'); // The chatroom page
@@ -225,11 +226,20 @@ $(function() {
     }
   });
 
+
   $inputMessage.on('input', function() {
     updateTyping();
   });
 
   // Click events
+
+  $sendButton.on("click", function(){
+    if (username) {
+      sendMessage();
+      socket.emit('stop typing');
+      typing = false;
+    }
+  });
 
   // Focus input when clicking anywhere on login page
   $loginPage.click(function () {
@@ -246,11 +256,6 @@ $(function() {
   // Whenever the server emits 'login', log the login message
   socket.on('login', function (data) {
     connected = true;
-    // Display the welcome message
-    var message = "Welcome to Socket.IO Chat – ";
-    log(message, {
-      prepend: true
-    });
     addParticipantsMessage(data);
   });
 

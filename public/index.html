@@ -2,19 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Socket.IO Chat Example</title>
+  <title>AIM Instant Messenger</title>
+  <meta name="viewport" content="width=device-width" />
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <ul class="pages">
     <li class="chat page">
-      <img class="aimIcon" src="./assets/icon.png"/>
-      <img class="xpButtons" src="./assets/buttons.png"/>
+      <span class="topbar">
+        <img class="aimIcon" src="./assets/icon.png"/>
+        <img class="xpButtons" src="./assets/buttons.png"/>
+      </span>
+
       <div class="chatArea">
         <ul class="messages"></ul>
       </div>
-      <input class="inputMessage" placeholder="Type here..."/>
-      <div class="sideBar"></div>
+
+      <span class="inputControls">
+        <input class="inputMessage" placeholder="Type here..."/>
+        <button type="button" class="sendButton" name="button"></button>
+      </span>
     </li>
     <li class="login page">
       <div class="form">
