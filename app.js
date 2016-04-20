@@ -14,6 +14,11 @@ app.use(express.static(__dirname + '/public'));
 
 // Chatroom
 
+app.get('/', function(req,res){
+  debugger;
+  res.render(__dirname + './public/index.html');
+});
+
 var numUsers = 0;
 
 io.on('connection', function (socket) {

@@ -17,13 +17,28 @@ $(function() {
   var $chatPage = $('.chat.page'); // The chatroom page
 
   // Prompt for setting a username
-  var username;
+  var username = localStorage.getItem('username') || null;
   var connected = false;
   var typing = false;
   var lastTypingTime;
   var $currentInput = $usernameInput.focus();
 
+  // Sounds
+  var buddyIn = new Audio("./assets/BuddyIn.mp3");
+  var buddyOut = new Audio("./assets/BuddyOut.mp3");
+  var imReceived = new Audio("./assets/im.wav");
+
   var socket = io();
+
+  if(username){
+
+    $currentInput = $inputMessage.focus();
+    $loginPage.fadeOut();
+    $chatPage.show();
+    $loginPage.off('click');
+
+    socket.emit('add user', username);
+  }
 
   function addParticipantsMessage (data) {
     var message = '';
@@ -41,6 +56,8 @@ $(function() {
 
     // If the username is valid
     if (username) {
+      localStorage.setItem('username',username);
+
       $loginPage.fadeOut();
       $chatPage.show();
       $loginPage.off('click');
@@ -238,17 +255,20 @@ $(function() {
 
   // Whenever the server emits 'new message', update the chat body
   socket.on('new message', function (data) {
+    imReceived.play();
     addChatMessage(data);
   });
 
   // Whenever the server emits 'user joined', log it in the chat body
   socket.on('user joined', function (data) {
     log(data.username + ' joined');
+    buddyIn.play();
     addParticipantsMessage(data);
   });
 
   // Whenever the server emits 'user left', log it in the chat body
   socket.on('user left', function (data) {
+    buddyOut.play();
     log(data.username + ' left');
     addParticipantsMessage(data);
     removeChatTyping(data);
