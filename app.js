@@ -20,6 +20,8 @@ app.get('/', function(req,res){
 });
 
 var numUsers = 0;
+var users = [];
+var usernames = [];
 
 io.on('connection', function (socket) {
   var addedUser = false;
@@ -41,14 +43,25 @@ io.on('connection', function (socket) {
     socket.username = username;
     ++numUsers;
     addedUser = true;
+    usernames.push(username);
+
     socket.emit('login', {
       numUsers: numUsers
     });
+
     // echo globally (all clients) that a person has connected
     socket.broadcast.emit('user joined', {
       username: socket.username,
       numUsers: numUsers
     });
+  });
+
+  socket.on('check username', function(username){
+    if(usernames.indexOf(username) <= -1){
+      socket.emit('checked username', true);
+    } else {
+      socket.emit('checked username', false);
+    }
   });
 
   // when the client emits 'typing', we broadcast it to others

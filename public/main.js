@@ -219,7 +219,8 @@ $(function() {
         socket.emit('stop typing');
         typing = false;
       } else {
-        setUsername();
+        // setUsername();
+        socket.emit('check username', cleanInput($usernameInput.val().trim()));
       }
     }
   });
@@ -251,6 +252,14 @@ $(function() {
       prepend: true
     });
     addParticipantsMessage(data);
+  });
+
+  socket.on('checked username', function (data) {
+    if(data){
+      setUsername();
+    } else{
+      alert("Username already exists. Choose another name.");
+    }
   });
 
   // Whenever the server emits 'new message', update the chat body
