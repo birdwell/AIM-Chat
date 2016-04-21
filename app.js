@@ -1,7 +1,10 @@
 // Setup basic express server
 var express = require('express');
+const router = express.Router();
+
 var app = express();
 var server = require('http').createServer(app);
+var path = require('path');
 var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 
@@ -10,14 +13,23 @@ server.listen(port, function () {
 });
 
 // Routing
-app.use(express.static(__dirname + '/public'));
+app.set('views', path.join(__dirname, '/public/views'));
+app.set('view engine', 'pug');
+
+app.use(router);
+app.use(express.static(path.join(__dirname, '/public')));
+
+// Provide all routes here
+router.get('/', function (req, res) {
+  res.render('index');
+});
+
+router.get('/friendList', function (req, res) {
+  res.render('friendList');
+});
 
 // Chatroom
 
-app.get('/', function(req,res){
-  debugger;
-  res.render(__dirname + './public/index.html');
-});
 
 var numUsers = 0;
 var users = [];

@@ -183,7 +183,7 @@ ul {
     border: none;
     height: 23px;
     background-repeat: no-repeat;
-    background-image: url('../assets/images/exit.png');
+    background-image: url('./assets/images/exit.png');
 }
 .aimIcon {
     position: absolute;
@@ -191,7 +191,7 @@ ul {
     left: 1px;
 }
 .sendButton {
-    background-image: url('../assets/images/sendbutton.png');
+    background-image: url('./assets/images/sendbutton.png');
     width: 34px;
     background-repeat: no-repeat;
     height: 38px;
@@ -202,5 +202,5 @@ ul {
     cursor: pointer;
 }
 .sendButton:hover {
-  background-image: url('../assets/images/hoverSendButton.png');
+  background-image: url('./assets/images/hoverSendButton.png');
 }

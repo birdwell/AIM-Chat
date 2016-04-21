@@ -1,0 +1,29 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    title AIM Instant Messenger
+    meta(name='viewport', content='width=device-width')
+    link(rel='stylesheet', href='/style.css')
+    link(rel='stylesheet', href='../components/dropdown/dropdown.css')
+  body
+    ul.pages
+      li.chat.page
+        span.topbar
+          img.aimIcon(src='../assets/images/icon.png')
+          button.exitButton
+        span.toolbar
+          include ../components/dropdown/dropdown.pug
+        .chatArea
+          ul.messages
+        span.inputControls
+          input.inputMessage(placeholder='Type here...')
+          button.sendButton(type='button', name='button')
+      li.login.page
+        .form
+          h3.title What's your nickname?
+          input.usernameInput(type='text', maxlength='14')
+    script(src='https://code.jquery.com/jquery-1.10.2.min.js')
+    script(src='/socket.io/socket.io.js')
+    script(src='/main.js')
+    script(src='/components/dropdown/dropdown.js')
