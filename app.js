@@ -78,10 +78,16 @@ io.on('connection', function (socket) {
     });
   });
 
+  socket.on("change username", function(oldUsername){
+    usernames.splice(usernames.indexOf(oldUsername), 1);
+  });
+
   // when the user disconnects.. perform this
   socket.on('disconnect', function () {
     if (addedUser) {
       --numUsers;
+
+      usernames.splice(usernames.indexOf(socket.username), 1);
 
       // echo globally that this client has left
       socket.broadcast.emit('user left', {

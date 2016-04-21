@@ -36,6 +36,7 @@ $(function(){
 
     if (username != null) {
         $usernameInput.val(username);
+        window.socket.emit('change username', window.socket.username);
         window.socket.emit('check username', cleanInput($usernameInput.val().trim()));
     }
   }
