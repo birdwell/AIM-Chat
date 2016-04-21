@@ -13,6 +13,7 @@ $(function() {
   var $messages = $('.messages'); // Messages area
   var $inputMessage = $('.inputMessage'); // Input message input box
   var $sendButton = $('.sendButton');
+  var $exitButton =$('.exitButton');
 
   var $loginPage = $('.login.page'); // The login page
   var $chatPage = $('.chat.page'); // The chatroom page
@@ -25,11 +26,11 @@ $(function() {
   var $currentInput = $usernameInput.focus();
 
   // Sounds
-  var buddyIn = new Audio("./assets/BuddyIn.mp3");
-  var buddyOut = new Audio("./assets/BuddyOut.mp3");
-  var imReceived = new Audio("./assets/im.wav");
+  var buddyIn = new Audio("./assets/sounds/BuddyIn.mp3");
+  var buddyOut = new Audio("./assets/sounds/BuddyOut.mp3");
+  var imReceived = new Audio("./assets/sounds/im.wav");
 
-  var socket = io();
+  window.socket = io();
 
   if(username){
 
@@ -239,6 +240,10 @@ $(function() {
       socket.emit('stop typing');
       typing = false;
     }
+  });
+
+  $exitButton.on("click", function(){
+    window.close();
   });
 
   // Focus input when clicking anywhere on login page

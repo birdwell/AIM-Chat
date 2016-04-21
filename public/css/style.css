@@ -175,18 +175,23 @@ ul {
 
 
 /* XP Styling */
-img.xpButtons {
+.exitButton {
     position: absolute;
-    top: -29px;
+    top: -25px;
     right: 1px;
+    width: 22px;
+    border: none;
+    height: 23px;
+    background-repeat: no-repeat;
+    background-image: url('../assets/images/exit.png');
 }
-img.aimIcon {
+.aimIcon {
     position: absolute;
     top: -25px;
     left: 1px;
 }
-button.sendButton {
-    background-image: url('./assets/sendbutton.png');
+.sendButton {
+    background-image: url('../assets/images/sendbutton.png');
     width: 34px;
     background-repeat: no-repeat;
     height: 38px;
@@ -196,6 +201,6 @@ button.sendButton {
     right: 9px;
     cursor: pointer;
 }
-button.sendButton:hover {
-  background-image: url('./assets/hoverSendButton.png');
+.sendButton:hover {
+  background-image: url('../assets/images/hoverSendButton.png');
 }

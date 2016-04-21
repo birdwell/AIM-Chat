@@ -4,16 +4,24 @@
   <meta charset="UTF-8">
   <title>AIM Instant Messenger</title>
   <meta name="viewport" content="width=device-width" />
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dropdown.css">
 </head>
 <body>
   <ul class="pages">
     <li class="chat page">
       <span class="topbar">
-        <img class="aimIcon" src="./assets/icon.png"/>
-        <img class="xpButtons" src="./assets/buttons.png"/>
+        <img class="aimIcon" src="./assets/images/icon.png"/>
+        <button class="exitButton"></button>
       </span>
-
+      <span class="toolbar">
+        <div class="dropdown">
+        <button class="dropbtn">File</button>
+        <div id="myDropdown" class="dropdown-content">
+          <a class="changeName" href="#">Change Name</a>
+        </div>
+      </div>
+      </span>
       <div class="chatArea">
         <ul class="messages"></ul>
       </div>
@@ -34,5 +42,6 @@
   <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/main.js"></script>
+  <script src="/js/dropdown.js"></script>
 </body>
 </html>
