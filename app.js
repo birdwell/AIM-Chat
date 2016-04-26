@@ -94,6 +94,11 @@ io.on('connection', function (socket) {
     usernames.splice(usernames.indexOf(oldUsername), 1);
   });
 
+
+  socket.on("join room", function(roomId){
+    socket.join(roomId);
+  });
+  
   // when the user disconnects.. perform this
   socket.on('disconnect', function () {
     if (addedUser) {
