@@ -6,6 +6,8 @@ html(lang='en')
     meta(name='viewport', content='width=device-width')
     link(rel='stylesheet', href='/style.css')
     link(rel='stylesheet', href='../components/dropdown/dropdown.css')
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous")
+
   body
     ul.pages
       li.chat.page
@@ -14,9 +16,9 @@ html(lang='en')
           button.exitButton
         span.toolbar
           include ../components/dropdown/dropdown.pug
-        .chatArea
+        .chatArea.container-fluid
           ul.messages
-        span.inputControls
+        .inputControls.container-fluid
           input.inputMessage(placeholder='Type here...')
           button.sendButton(type='button', name='button')
       li.login.page
@@ -27,3 +29,5 @@ html(lang='en')
     script(src='/socket.io/socket.io.js')
     script(src='/main.js')
     script(src='/components/dropdown/dropdown.js')
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js" integrity="sha384-vZ2WRJMwsjRMW/8U7i6PWi6AlO1L79snBrmgiDpgIWJ82z8eA5lenwvxbMV1PAh7" crossorigin="anonymous")

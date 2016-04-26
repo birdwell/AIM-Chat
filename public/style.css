@@ -26,6 +26,11 @@ html, body {
   padding: 0;
 }
 
+body {
+  background-image: url('./assets/images/background.jpg');
+  background-repeat: no-repeat;
+}
+
 ul {
   list-style: none;
   word-wrap: break-word;
@@ -42,7 +47,6 @@ ul {
 
 .page {
   height: 90%;
-  position: absolute;
   width: 45%;
   max-height: 450px;
 }
@@ -104,6 +108,9 @@ ul {
     background-color: #ECE9D8;
     border: 3px solid #0054E8;
     border-top-width: 27px;
+    margin-left: 25%;
+    margin-top: 3%;
+    border-radius: 4px;
 }
 
 /* Font */
@@ -127,15 +134,11 @@ ul {
 /* Messages */
 
 .chatArea {
-  height: 100%;
-  padding-bottom: 60px;
+  height: 60%;
 }
 
 .messages {
-  height: 60%;
-  width: 98%;
   margin-left: 1%;
-  margin-top: 5%;
   margin-right: 1%;
   overflow-y: scroll;
   padding: 10px 20px 10px 20px;
@@ -145,6 +148,8 @@ ul {
   border-left: 1px solid #B3AFA0;
   border-right: 1px solid white;
   border-bottom: 1px solid white;
+  overflow: scroll;
+  height: 100%;
 }
 
 .message.typing .messageBody {
@@ -162,44 +167,42 @@ ul {
 
 .inputMessage {
   border: 1px solid #000;
-  bottom: 14%;
-  height: 20%;
-  left: 0;
+  height: 50%;
   outline: none;
   padding-left: 10px;
-  position: absolute;
-  right: 0;
   width: 98%;
   margin-left: 1%;
+  margin-top: 5px;
 }
 
+.inputControls {
+    height: 40%;
+}
 
 /* XP Styling */
 .exitButton {
-    position: absolute;
-    top: -25px;
-    right: 1px;
     width: 22px;
     border: none;
     height: 23px;
     background-repeat: no-repeat;
     background-image: url('./assets/images/exit.png');
+    float: right;
+    position: relative;
+    top: -24px;
+    left: -1px;
 }
-.aimIcon {
-    position: absolute;
-    top: -25px;
-    left: 1px;
-}
+.aimIcon {position: relative;top: -28px;}
 .sendButton {
     background-image: url('./assets/images/sendbutton.png');
     width: 34px;
     background-repeat: no-repeat;
     height: 38px;
     border: none;
-    position: absolute;
     bottom: 2%;
-    right: 9px;
+    float: right;
     cursor: pointer;
+    margin-right: 5px;
+    margin-top: 5px;
 }
 .sendButton:hover {
   background-image: url('./assets/images/hoverSendButton.png');

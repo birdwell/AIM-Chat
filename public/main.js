@@ -20,6 +20,7 @@ $(function() {
 
   // Prompt for setting a username
   var username = localStorage.getItem('username') || null;
+  var room = '';
   var connected = false;
   var typing = false;
   var lastTypingTime;
@@ -72,9 +73,12 @@ $(function() {
 
   // Sends a chat message
   function sendMessage () {
-    var message = $inputMessage.val();
+    var message = $inputMessage.val(),
+    room = socket.rooms && socket.rooms[1];
+
     // Prevent markup from being injected into the message
     message = cleanInput(message);
+
     // if there is a non-empty message and a socket connection
     if (message && connected) {
       $inputMessage.val('');
@@ -82,8 +86,13 @@ $(function() {
         username: username,
         message: message
       });
+
       // tell server to execute 'new message' and send along one parameter
-      socket.emit('new message', message);
+      if(room) {
+        socket.to(room).emit('new message', message);
+      } else {
+        socket.emit('new message', message);
+      }
     }
   }
 
@@ -197,6 +206,7 @@ $(function() {
 
   // Gets the color of a username through our hash function
   function getUsernameColor (username) {
+    if(!username) return;
     // Compute hash code
     var hash = 7;
     for (var i = 0; i < username.length; i++) {
@@ -262,11 +272,13 @@ $(function() {
   socket.on('login', function (data) {
     connected = true;
     addParticipantsMessage(data);
-    socket.join('test');
+
+    // Join the main room
+    socket.emit('join room','main');
   });
 
-  socket.on('checked username', function (data) {
-    if(data){
+  socket.on('checked username', function (isNameAvailable) {
+    if(isNameAvailable){
       setUsername();
     } else{
       alert("Username already exists. Choose another name.");
@@ -274,9 +286,9 @@ $(function() {
   });
 
   // Whenever the server emits 'new message', update the chat body
-  socket.on('new message', function (data) {
+  socket.on('new message', function (newMessage) {
     imReceived.play();
-    addChatMessage(data);
+    addChatMessage(newMessage);
   });
 
   // Whenever the server emits 'user joined', log it in the chat body
