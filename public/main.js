@@ -262,6 +262,7 @@ $(function() {
   socket.on('login', function (data) {
     connected = true;
     addParticipantsMessage(data);
+    socket.join('test');
   });
 
   socket.on('checked username', function (data) {
