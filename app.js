@@ -41,39 +41,38 @@ io.on('connection', function (socket) {
   // when the client emits 'new message', this listens and executes
   socket.on('new message', function (msg) {
     // we tell the client to execute 'new message'
-    var room = socket.rooms && socket.rooms[1];
-
-    if(room) {
-      socket.to(room).emit('new message', {
-        username: socket.username,
-        message: msg
-      });
-    } else {
-      socket.emit('new message', {
-        username: socket.username,
-        message: msg
-      });
-    }
-
+    console.log("Message " + msg + " to the following room: " + socket.room);
+    io.sockets.in(socket.room).emit(socket.room).emit('new message', {
+      username: socket.username,
+      message: msg
+    });
   });
 
   // when the client emits 'add user', this listens and executes
   socket.on('add user', function (username) {
     if (addedUser) return;
-    var room = socket.rooms && socket.rooms[1];
 
     // we store the username in the socket session for this client
     socket.username = username;
+    socket.room = 'main';
+    socket.rooms = ['main'];
+
+    socket.join('main');
+
+    // user updating
     ++numUsers;
     addedUser = true;
     usernames.push(username);
 
-    if(room) {
-      socket.to(room).emit('login', {
-        numUsers: numUsers
-      });
-    } else {
-      socket.emit('login', {
+    socket.emit('login', {
+      numUsers: numUsers,
+      room: socket.room
+    });
+
+    if(socket.room) {
+      console.log("Adding " + username + " to the following room: " + socket.room);
+
+      socket.to(socket.room).emit('login', {
         numUsers: numUsers
       });
     }
@@ -114,6 +113,14 @@ io.on('connection', function (socket) {
 
   socket.on("join room", function(roomId){
     socket.join(roomId);
+    socket.room = roomId;
+    if(!socket.rooms) {
+      socket.rooms = [];
+    }
+    socket.rooms.push(roomId);
+  });
+
+  socket.on("leave room", function(roomId){
   });
 
   // when the user disconnects.. perform this

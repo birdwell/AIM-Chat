@@ -30,8 +30,9 @@ $(function() {
   var buddyIn = new Audio("./assets/sounds/BuddyIn.mp3");
   var buddyOut = new Audio("./assets/sounds/BuddyOut.mp3");
   var imReceived = new Audio("./assets/sounds/im.wav");
+  var $groupUl = $('.group-tabs');
 
-  window.socket = io();
+  window.socket = io.connect('http://localhost:3000');
 
   if(username){
 
@@ -41,6 +42,10 @@ $(function() {
     $loginPage.off('click');
 
     socket.emit('add user', username);
+  }
+
+  function addGroupLi(name) {
+    $groupUl.append('<li class="nav-item"><a class="nav-link" groupName= "' + name + '" >' + name + '</a></li>')
   }
 
   function addParticipantsMessage (data) {
@@ -74,25 +79,19 @@ $(function() {
   // Sends a chat message
   function sendMessage () {
     var message = $inputMessage.val(),
-    room = socket.rooms && socket.rooms[1];
-
     // Prevent markup from being injected into the message
     message = cleanInput(message);
 
     // if there is a non-empty message and a socket connection
     if (message && connected) {
       $inputMessage.val('');
-      addChatMessage({
-        username: username,
-        message: message
-      });
+      // addChatMessage({
+      //   username: username,
+      //   message: message
+      // });
 
       // tell server to execute 'new message' and send along one parameter
-      if(room) {
-        socket.to(room).emit('new message', message);
-      } else {
-        socket.emit('new message', message);
-      }
+      socket.emit('new message', message);
     }
   }
 
@@ -269,12 +268,10 @@ $(function() {
   // Socket events
 
   // Whenever the server emits 'login', log the login message
-  socket.on('login', function (data) {
+  socket.on('login', function (loginInfo) {
     connected = true;
-    addParticipantsMessage(data);
-
-    // Join the main room
-    socket.emit('join room','main');
+    addGroupLi(loginInfo.room);
+    addParticipantsMessage(loginInfo.numUsers);
   });
 
   socket.on('checked username', function (isNameAvailable) {
@@ -287,7 +284,9 @@ $(function() {
 
   // Whenever the server emits 'new message', update the chat body
   socket.on('new message', function (newMessage) {
-    imReceived.play();
+    if(username != newMessage.username){
+      imReceived.play();
+    }
     addChatMessage(newMessage);
   });
 
@@ -314,5 +313,12 @@ $(function() {
   // Whenever the server emits 'stop typing', kill the typing message
   socket.on('stop typing', function (data) {
     removeChatTyping(data);
+  });
+
+
+  /* Group Logic */
+
+  socket.on('update room', function(room){
+    addGroupLi(room);
   });
 });
