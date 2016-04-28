@@ -1,3 +1,4 @@
+
 $(function() {
   var FADE_TIME = 150; // ms
   var TYPING_TIMER_LENGTH = 400; // ms
@@ -21,6 +22,9 @@ $(function() {
   // Prompt for setting a username
   var username = localStorage.getItem('username') || null;
   var room = '';
+  var groups = localStorage.getItem('groups');
+  var newgroups = []
+  var groupStart = localStorage.getItem('groupStart');
   var connected = false;
   var typing = false;
   var lastTypingTime;
@@ -44,6 +48,18 @@ $(function() {
     $loginPage.off('click');
 
     socket.emit('add user', username);
+  }
+
+  if (groups) {
+    var newGroups = JSON.parse(groups);
+    groups = newGroups;
+    for (var i = 0; i < groups.length; i++) {
+      addGroupLi(groups[i]);
+    }
+  }
+
+  if (groupStart) {
+    activeGroup(groupStart);
   }
 
   function addParticipantsMessage (data) {
@@ -323,12 +339,17 @@ $(function() {
   });
 
   function addGroupLi(name) {
+    newgroups.push(name);
+    localStorage.setItem('groups',JSON.stringify(newgroups));
     $groupUl.append('<li class="nav-item"><a class="nav-link" groupName= "' + name + '" >' + name + '</a></li>')
   }
 
   function activeGroup(name) {
+    localStorage.setItem('groupStart', name);
     var group = $('[groupname="'+ name + '"]');
     var activeGroup = $('.nav-link.active');
+
+    $messages.empty();
 
     group.addClass('active');
     if (activeGroup) activeGroup.removeClass('active');
