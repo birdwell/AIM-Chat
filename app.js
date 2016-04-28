@@ -121,6 +121,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on("leave room", function(roomId){
+    socket.leave(roomId);
   });
 
   // when the user disconnects.. perform this
