@@ -124,6 +124,13 @@ io.on('connection', function (socket) {
     }
   });
 
+  socket.on('serv disconnect', function(uname) {
+    socket.broadcast.emit('user left', {
+      username: uname,
+      numUsers: numUsers
+    });
+  });
+
   /* GROUP LOGIC */
   socket.on("join room", function(roomId){
     socket.join(roomId);
