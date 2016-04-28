@@ -38,11 +38,11 @@ var usernames = [];
 io.on('connection', function (socket) {
   var addedUser = false;
 
-  // when the client emits 'new message', this listens and executes
+  // when the client emits 'p', this listens and executes
   socket.on('new message', function (msg) {
     // we tell the client to execute 'new message'
     console.log("Message " + msg + " to the following room: " + socket.room);
-    io.sockets.in(socket.room).emit(socket.room).emit('new message', {
+    io.sockets.in(socket.room).emit('new message', {
       username: socket.username,
       message: msg
     });
@@ -51,13 +51,20 @@ io.on('connection', function (socket) {
   // when the client emits 'add user', this listens and executes
   socket.on('add user', function (username) {
     if (addedUser) return;
+    for(var i = 0; i < socket.rooms; i++){
+      socket.leave(socket.rooms[i]);
+    }
 
+    var joinRoom = 'main';
     // we store the username in the socket session for this client
     socket.username = username;
-    socket.room = 'main';
-    socket.rooms = ['main'];
+    socket.join(joinRoom);
+    socket.room = joinRoom;
 
-    socket.join('main');
+    if(!socket.rooms) {
+      socket.rooms = [];
+    }
+    socket.rooms.push(joinRoom);
 
     // user updating
     ++numUsers;
@@ -68,14 +75,6 @@ io.on('connection', function (socket) {
       numUsers: numUsers,
       room: socket.room
     });
-
-    if(socket.room) {
-      console.log("Adding " + username + " to the following room: " + socket.room);
-
-      socket.to(socket.room).emit('login', {
-        numUsers: numUsers
-      });
-    }
 
     // echo globally (all clients) that a person has connected
     socket.broadcast.emit('user joined', {
@@ -94,34 +93,20 @@ io.on('connection', function (socket) {
 
   // when the client emits 'typing', we broadcast it to others
   socket.on('typing', function () {
-    socket.broadcast.emit('typing', {
+    io.sockets.to(socket.room).emit('typing', {
       username: socket.username
     });
   });
 
   // when the client emits 'stop typing', we broadcast it to others
   socket.on('stop typing', function () {
-    socket.broadcast.emit('stop typing', {
+    io.sockets.to(socket.room).emit('stop typing', {
       username: socket.username
     });
   });
 
   socket.on("change username", function(oldUsername){
     usernames.splice(usernames.indexOf(oldUsername), 1);
-  });
-
-
-  socket.on("join room", function(roomId){
-    socket.join(roomId);
-    socket.room = roomId;
-    if(!socket.rooms) {
-      socket.rooms = [];
-    }
-    socket.rooms.push(roomId);
-  });
-
-  socket.on("leave room", function(roomId){
-    socket.leave(roomId);
   });
 
   // when the user disconnects.. perform this
@@ -137,5 +122,38 @@ io.on('connection', function (socket) {
         numUsers: numUsers
       });
     }
+  });
+
+  /* GROUP LOGIC */
+  socket.on("join room", function(roomId){
+    socket.join(roomId);
+    socket.room = roomId;
+    if(!socket.rooms) {
+      socket.rooms = [];
+    }
+    socket.rooms.push(roomId);
+  });
+
+  socket.on("leave room", function(roomId){
+    socket.leave(roomId);
+    socket.rooms.splice(socket.rooms.indexOf(roomId), 1);
+    socket.room = null;
+  });
+
+  socket.on("switch room", function(newRoom) {
+    var oldRoom = socket.room;
+    for(var i = 0; i < socket.rooms; i++){
+      socket.leave(socket.rooms[i]);
+    }
+    socket.rooms.splice(socket.rooms.indexOf(oldRoom), 1);
+    socket.room = newRoom;
+
+    socket.join(newRoom);
+    console.log("Joining room: " + newRoom);
+    if(!socket.rooms) {
+      socket.rooms = [];
+    }
+    socket.rooms.push(newRoom);
+    console.log(socket.rooms);
   });
 });

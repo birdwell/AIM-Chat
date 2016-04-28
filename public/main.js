@@ -12,11 +12,11 @@ $(function() {
   var $usernameInput = $('.usernameInput'); // Input for username
   var $messages = $('.messages'); // Messages area
   var $inputMessage = $('.inputMessage'); // Input message input box
-  var $sendButton = $('.sendButton');
-  var $exitButton =$('.exitButton');
+  const $sendButton = $('.sendButton');
+  const $exitButton =$('.exitButton');
 
-  var $loginPage = $('.login.page'); // The login page
-  var $chatPage = $('.chat.page'); // The chatroom page
+  const $loginPage = $('.login.page'); // The login page
+  const $chatPage = $('.chat.page'); // The chatroom page
 
   // Prompt for setting a username
   var username = localStorage.getItem('username') || null;
@@ -27,10 +27,12 @@ $(function() {
   var $currentInput = $usernameInput.focus();
 
   // Sounds
-  var buddyIn = new Audio("./assets/sounds/BuddyIn.mp3");
-  var buddyOut = new Audio("./assets/sounds/BuddyOut.mp3");
-  var imReceived = new Audio("./assets/sounds/im.wav");
-  var $groupUl = $('.group-tabs');
+  const buddyIn = new Audio("./assets/sounds/BuddyIn.mp3");
+  const buddyOut = new Audio("./assets/sounds/BuddyOut.mp3");
+  const imReceived = new Audio("./assets/sounds/im.wav");
+
+  // Group
+  const $groupUl = $('.group-tabs');
 
   window.socket = io.connect('http://localhost:3000');
 
@@ -42,10 +44,6 @@ $(function() {
     $loginPage.off('click');
 
     socket.emit('add user', username);
-  }
-
-  function addGroupLi(name) {
-    $groupUl.append('<li class="nav-item"><a class="nav-link" groupName= "' + name + '" >' + name + '</a></li>')
   }
 
   function addParticipantsMessage (data) {
@@ -271,6 +269,7 @@ $(function() {
   socket.on('login', function (loginInfo) {
     connected = true;
     addGroupLi(loginInfo.room);
+    activeGroup(loginInfo.room);
     addParticipantsMessage(loginInfo.numUsers);
   });
 
@@ -320,5 +319,40 @@ $(function() {
 
   socket.on('update room', function(room){
     addGroupLi(room);
+    activeGroup(room);
   });
+
+  function addGroupLi(name) {
+    $groupUl.append('<li class="nav-item"><a class="nav-link" groupName= "' + name + '" >' + name + '</a></li>')
+  }
+
+  function activeGroup(name) {
+    var group = $('[groupname="'+ name + '"]');
+    var activeGroup = $('.nav-link.active');
+
+    group.addClass('active');
+    if (activeGroup) activeGroup.removeClass('active');
+  }
+
+  function onGroupClick(e){
+    const target = $(e.target);
+    if(target.is('.group-tabs, .active')) {
+      return;
+    } else if(target.is('.addGroup')){
+      addGroup();
+    } else if(target.is('.nav-link')) {
+      const group = target.attr('groupname');
+      socket.emit('switch room', group);
+      activeGroup(group);
+    }
+  }
+
+  function addGroup(){
+    var newGroup = prompt("Join Group");
+    socket.emit('switch room', newGroup);
+    addGroupLi(newGroup);
+    activeGroup(newGroup);
+  }
+
+  $groupUl.on('click', onGroupClick);
 });
