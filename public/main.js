@@ -1,4 +1,3 @@
-
 $(function() {
   var FADE_TIME = 150; // ms
   var TYPING_TIMER_LENGTH = 400; // ms
@@ -63,13 +62,13 @@ $(function() {
   }
 
   function addParticipantsMessage (data) {
-    var message = '';
-    if (data.numUsers === 1) {
-      message += "1 participant";
-    } else {
-      message += data.numUsers + " participants";
-    }
-    log(message);
+    // var message = '';
+    // if (data.numUsers === 1) {
+    //   message += "1 participant";
+    // } else {
+    //   message += data.numUsers + " participants";
+    // }
+    // log(message);
   }
 
   // Sets the client's username
@@ -339,7 +338,8 @@ $(function() {
   });
 
   function addGroupLi(name) {
-    newgroups.push(name);
+  	if (newgroups.indexOf(name) == -1 && name != "main")
+ 	   newgroups.push(name);
     localStorage.setItem('groups',JSON.stringify(newgroups));
     $groupUl.append('<li class="nav-item"><a class="nav-link" groupName= "' + name + '" >' + name + '</a></li>')
   }

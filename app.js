@@ -1,12 +1,12 @@
 // Setup basic express server
-var express = require('express');
+const express = require('express');
 const router = express.Router();
 
-var app = express();
-var server = require('http').createServer(app);
-var path = require('path');
-var io = require('socket.io')(server);
-var port = process.env.PORT || 3000;
+const app = express();
+const server = require('http').createServer(app);
+const path = require('path');
+const io = require('socket.io')(server);
+const port = process.env.PORT || 3000;
 
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
@@ -29,8 +29,6 @@ router.get('/friendList', function (req, res) {
 });
 
 // Chatroom
-
-
 var numUsers = 0;
 var users = [];
 var usernames = [];
@@ -41,25 +39,36 @@ io.on('connection', function (socket) {
   // when the client emits 'p', this listens and executes
   socket.on('new message', function (msg) {
     // we tell the client to execute 'new message'
-    console.log("Message " + msg + " to the following room: " + socket.room);
+    console.log(socket.username + " is sending message in room: " + socket.room);
     io.sockets.in(socket.room).emit('new message', {
       username: socket.username,
       message: msg
     });
   });
 
+  socket.on('serv new message', function (g, u, m) {
+    io.sockets.in(g).emit('new message', {
+      username: u,
+      message: m
+    });
+  });
+
   // when the client emits 'add user', this listens and executes
   socket.on('add user', function (username) {
-    if (addedUser) return;
-    for(var i = 0; i < socket.rooms; i++){
+    if (addedUser) { return; }
+
+    for(var i = 0; i < socket.rooms.length; i++) {
       socket.leave(socket.rooms[i]);
+      socket.rooms.splice(socket.rooms.indexOf(i), 1);
     }
 
     var joinRoom = 'main';
+
     // we store the username in the socket session for this client
     socket.username = username;
     socket.join(joinRoom);
     socket.room = joinRoom;
+
 
     if(!socket.rooms) {
       socket.rooms = [];
@@ -67,9 +76,11 @@ io.on('connection', function (socket) {
     socket.rooms.push(joinRoom);
 
     // user updating
-    ++numUsers;
+    numUsers = numUsers + 1;
     addedUser = true;
     usernames.push(username);
+
+    console.log(socket.username + " just joined " + socket.room + " and is in " + socket.rooms);
 
     socket.emit('login', {
       numUsers: numUsers,
@@ -105,14 +116,14 @@ io.on('connection', function (socket) {
     });
   });
 
-  socket.on("change username", function(oldUsername){
+  socket.on('change username', function(oldUsername){
     usernames.splice(usernames.indexOf(oldUsername), 1);
   });
 
   // when the user disconnects.. perform this
   socket.on('disconnect', function () {
     if (addedUser) {
-      --numUsers;
+      numUsers = numUsers - 1;
 
       usernames.splice(usernames.indexOf(socket.username), 1);
 
@@ -132,35 +143,36 @@ io.on('connection', function (socket) {
   });
 
   /* GROUP LOGIC */
-  socket.on("join room", function(roomId){
+  socket.on('join room', function(roomId){
     socket.join(roomId);
     socket.room = roomId;
     if(!socket.rooms) {
       socket.rooms = [];
     }
     socket.rooms.push(roomId);
+    console.log(socket.username + " joined " + socket.room + " and is in " + socket.rooms);
   });
 
-  socket.on("leave room", function(roomId){
+  socket.on('leave room', function(roomId){
     socket.leave(roomId);
     socket.rooms.splice(socket.rooms.indexOf(roomId), 1);
     socket.room = null;
+    console.log(socket.username + " left " + socket.room + " and is in " + socket.rooms);
   });
 
-  socket.on("switch room", function(newRoom) {
+  socket.on('switch room', function(newRoom) {
     var oldRoom = socket.room;
-    for(var i = 0; i < socket.rooms; i++){
+    for(var i = 0; i < socket.rooms.length; i++){
       socket.leave(socket.rooms[i]);
     }
     socket.rooms.splice(socket.rooms.indexOf(oldRoom), 1);
     socket.room = newRoom;
 
     socket.join(newRoom);
-    console.log("Joining room: " + newRoom);
     if(!socket.rooms) {
       socket.rooms = [];
     }
     socket.rooms.push(newRoom);
-    console.log(socket.rooms);
+    console.log(socket.username + " joined " + socket.room + " and is in " + socket.rooms);
   });
 });
